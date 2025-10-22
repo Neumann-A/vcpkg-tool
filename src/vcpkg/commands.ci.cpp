@@ -50,6 +50,9 @@ namespace
         {SwitchXXUnitAll, msgCISwitchOptXUnitAll},
     };
 
+    // Fake ABI hash for excluded ports (they don't get real ABIs)
+    constexpr StringLiteral fake_abi = "0000000000000000000000000000000000000000000000000000000000000000";
+
     struct UnknownCIPortsResults
     {
         std::map<PackageSpec, BuildResult> known;
@@ -444,8 +447,6 @@ namespace vcpkg
             for (const auto& excluded_spec : ports_to_exclude)
             {
                 split_specs->known.emplace(excluded_spec, BuildResult::Excluded);
-                // Generate a simple hash for excluded ports (they don't get real ABIs)
-                std::string fake_abi = "0000000000000000000000000000000000000000000000000000000000000000";
                 split_specs->abi_map.emplace(excluded_spec, fake_abi);
                 split_specs->features.emplace(excluded_spec, std::vector<std::string>{"core"});
                 msg += fmt::format("{:>40}: {:>8}: {}\n", excluded_spec, "skip", fake_abi);
